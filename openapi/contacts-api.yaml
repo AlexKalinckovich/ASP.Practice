@@ -1,0 +1,129 @@
+openapi: 3.0.1
+info:
+  title: Contacts API
+  description: API for managing contacts.
+  version: 1.0.0
+paths:
+  /api/contacts:
+    get:
+      summary: Retrieves a list of contacts
+      operationId: getContacts
+      responses:
+        '200':
+          description: A list of contacts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
+    post:
+      summary: Creates a new contact
+      operationId: createContact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInput'
+      responses:
+        '201':
+          description: The created contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+        '400':
+          description: Invalid input
+  /api/contacts/{id}:
+    get:
+      summary: Retrieves a specific contact by ID
+      operationId: getContactById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The requested contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+        '404':
+          description: Contact not found
+    put:
+      summary: Updates a specific contact
+      operationId: updateContact
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInput'
+      responses:
+        '204':
+          description: Contact successfully updated
+        '400':
+          description: Invalid input
+        '404':
+          description: Contact not found
+    delete:
+      summary: Deletes a specific contact
+      operationId: deleteContact
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Contact successfully deleted
+        '404':
+          description: Contact not found
+components:
+  schemas:
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        mobilePhone:
+          type: string
+        jobTitle:
+          type: string
+        birthDate:
+          type: string
+          format: date
+    ContactInput:
+      type: object
+      required:
+        - name
+        - mobilePhone
+        - jobTitle
+        - birthDate
+      properties:
+        name:
+          type: string
+        mobilePhone:
+          type: string
+        jobTitle:
+          type: string
+        birthDate:
+          type: string
+          format: date
