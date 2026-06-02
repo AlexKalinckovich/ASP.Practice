@@ -1,8 +1,8 @@
-namespace ContactBackend.Application.Core.Models;
 
-public class Contact
+namespace Model.Core.DTOs;
+
+public class ContactCreateDto
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public string MobilePhone { get; set; }
     public string JobTitle { get; set; }
