@@ -1,4 +1,3 @@
-using ContactBackend.Application.Core.Validators;
 using Data.Core;
 using Model.Core.Mappers;
 using FluentValidation;

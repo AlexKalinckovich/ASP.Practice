@@ -1,14 +1,15 @@
-
 using Model.Core.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Service.Core;
 
 public interface IContactService
 {
-    IEnumerable<ContactReadDto> GetAll();
-    ContactReadDto? GetById(long id);
-    ContactReadDto Create(ContactCreateDto dto);
-    void Update(ContactUpdateDto dto);
-    void Patch(long id, ContactPatchDto dto);
-    void Delete(long id);
+    Task<IEnumerable<ContactReadDto>> GetAllAsync();
+    Task<ContactReadDto?> GetByIdAsync(long id);
+    Task<ContactReadDto> CreateAsync(ContactCreateDto dto);
+    Task UpdateAsync(ContactUpdateDto dto);
+    Task PatchAsync(long id, ContactPatchDto dto);
+    Task DeleteAsync(long id);
 }

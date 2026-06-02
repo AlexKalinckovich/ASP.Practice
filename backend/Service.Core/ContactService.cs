@@ -22,9 +22,15 @@ public class ContactService : IContactService
         _validationFactory = validationFactory;
     }
 
-    public IEnumerable<ContactReadDto> GetAll()
+    public async Task<IEnumerable<ContactReadDto>> GetAllAsync()
     {
-        IEnumerable<Contact> entities = _repository.GetAll();
+        IEnumerable<Contact> entities = await _repository.GetAllReadOnlyAsync();
+        
+        return TransformEntitiesToDtos(entities);
+    }
+
+    private IEnumerable<ContactReadDto> TransformEntitiesToDtos(IEnumerable<Contact> entities)
+    {
         return entities.Select(MapEntityToDto).ToList();
     }
 
@@ -33,9 +39,10 @@ public class ContactService : IContactService
         return _mapper.MapToDto(entity);
     }
 
-    public ContactReadDto? GetById(long id)
+    public async Task<ContactReadDto?> GetByIdAsync(long id)
     {
-        Contact? entity = _repository.GetById(id);
+        Contact? entity = await _repository.GetByIdReadOnlyAsync(id);
+        
         return ProcessGetByIdResult(entity);
     }
 
@@ -49,80 +56,81 @@ public class ContactService : IContactService
         return _mapper.MapToDto(entity);
     }
 
-    public ContactReadDto Create(ContactCreateDto dto)
+    public async Task<ContactReadDto> CreateAsync(ContactCreateDto dto)
     {
         _validationFactory.ValidateAndThrow(dto);
         Contact entity = _mapper.MapToEntity(dto);
             
-        _repository.Add(entity);
-        _repository.SaveChanges();
+        await _repository.AddAsync(entity);
+        await _repository.SaveChangesAsync();
             
         return _mapper.MapToDto(entity);
     }
 
-    public void Update(ContactUpdateDto dto)
+    public async Task UpdateAsync(ContactUpdateDto dto)
     {
         _validationFactory.ValidateAndThrow(dto);
-        Contact? entity = _repository.GetById(dto.Id);
+        Contact? entity = await _repository.GetByIdAsync(dto.Id);
             
-        ProcessUpdateEntity(dto, entity);
+        await ProcessUpdateEntityAsync(dto, entity);
     }
 
-    private void ProcessUpdateEntity(ContactUpdateDto dto, Contact? entity)
+    private async Task ProcessUpdateEntityAsync(ContactUpdateDto dto, Contact? entity)
     {
         if (entity != null)
         {
-            ExecuteUpdate(dto, entity);
+            await ExecuteUpdateAsync(dto, entity);
         }
     }
 
-    private void ExecuteUpdate(ContactUpdateDto dto, Contact entity)
+    private async Task ExecuteUpdateAsync(ContactUpdateDto dto, Contact entity)
     {
         _mapper.ApplyUpdate(dto, entity);
         _repository.Update(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
     }
 
-    public void Patch(long id, ContactPatchDto dto)
+    public async Task PatchAsync(long id, ContactPatchDto dto)
     {
         _validationFactory.ValidateAndThrow(dto);
-        Contact? entity = _repository.GetById(id);
+        Contact? entity = await _repository.GetByIdAsync(id);
             
-        ProcessPatchEntity(dto, entity);
+        await ProcessPatchEntityAsync(dto, entity);
     }
 
-    private void ProcessPatchEntity(ContactPatchDto dto, Contact? entity)
+    private async Task ProcessPatchEntityAsync(ContactPatchDto dto, Contact? entity)
     {
         if (entity != null)
         {
-            ExecutePatch(dto, entity);
+            await ExecutePatchAsync(dto, entity);
         }
     }
 
-    private void ExecutePatch(ContactPatchDto dto, Contact entity)
+    private async Task ExecutePatchAsync(ContactPatchDto dto, Contact entity)
     {
         _mapper.ApplyPatch(dto, entity);
         _repository.Update(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
     }
 
-    public void Delete(long id)
+    public async Task DeleteAsync(long id)
     {
-        Contact? entity = _repository.GetById(id);
-        ProcessDeleteEntity(entity);
+        Contact? entity = await _repository.GetByIdAsync(id);
+        
+        await ProcessDeleteEntityAsync(entity);
     }
 
-    private void ProcessDeleteEntity(Contact? entity)
+    private async Task ProcessDeleteEntityAsync(Contact? entity)
     {
         if (entity != null)
         {
-            ExecuteDelete(entity);
+            await ExecuteDeleteAsync(entity);
         }
     }
 
-    private void ExecuteDelete(Contact entity)
+    private async Task ExecuteDeleteAsync(Contact entity)
     {
         _repository.Delete(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
     }
 }

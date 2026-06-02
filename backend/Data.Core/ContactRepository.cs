@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model.Core.Models;
 
 namespace Data.Core;
@@ -11,38 +13,105 @@ public class ContactRepository : IContactRepository
         _dbContext = dbContext;
     }
 
-    public IEnumerable<Contact> GetAll()
+    public async Task<IEnumerable<Contact>> GetAllAsync()
     {
-        return _dbContext.Contacts.ToList();
+        return await FetchAllContactsFromDatabaseAsync();
     }
 
-    public Contact? GetById(long id)
+    private async Task<IEnumerable<Contact>> FetchAllContactsFromDatabaseAsync()
     {
-        return _dbContext.Contacts.Find(id);
+        List<Contact> contacts = await _dbContext.Contacts.ToListAsync();
+        
+        return contacts;
     }
 
-    public void Add(Contact contact)
+    public async Task<Contact?> GetByIdAsync(long id)
     {
-        _dbContext.Contacts.Add(contact);
+        return await FetchContactByIdFromDatabaseAsync(id);
+    }
+
+    private async Task<Contact?> FetchContactByIdFromDatabaseAsync(long id)
+    {
+        Contact? contact = await _dbContext.Contacts.FindAsync(id);
+        
+        return contact;
+    }
+
+    public async Task<IEnumerable<Contact>> GetAllReadOnlyAsync()
+    {
+        return await FetchAllContactsAsNoTrackingAsync();
+    }
+
+    private async Task<IEnumerable<Contact>> FetchAllContactsAsNoTrackingAsync()
+    {
+        List<Contact> contacts = await _dbContext.Contacts.AsNoTracking().ToListAsync();
+        
+        return contacts;
+    }
+
+    public async Task<Contact?> GetByIdReadOnlyAsync(long id)
+    {
+        return await FetchContactByIdAsNoTrackingAsync(id);
+    }
+
+    private async Task<Contact?> FetchContactByIdAsNoTrackingAsync(long id)
+    {
+        Contact? contact = await _dbContext.Contacts.AsNoTracking().FirstOrDefaultAsync(contact => contact.Id == id);
+        
+        return contact;
+    }
+
+    public async Task<Contact> AddAsync(Contact contact)
+    {
+        return await InsertContactIntoDatabaseAsync(contact);
+    }
+
+    private async Task<Contact> InsertContactIntoDatabaseAsync(Contact contact)
+    {
+        EntityEntry<Contact> entityEntry = await _dbContext.Contacts.AddAsync(contact);
+        
+        return entityEntry.Entity;
     }
 
     public void Update(Contact contact)
+    {
+        UpdateContactInDatabaseContext(contact);
+    }
+
+    private void UpdateContactInDatabaseContext(Contact contact)
     {
         _dbContext.Contacts.Update(contact);
     }
 
     public void Delete(Contact contact)
     {
+        RemoveContactFromDatabaseContext(contact);
+    }
+
+    private void RemoveContactFromDatabaseContext(Contact contact)
+    {
         _dbContext.Contacts.Remove(contact);
     }
 
-    public bool Exists(long id)
+    public async Task<bool> ExistsAsync(long id)
     {
-        return _dbContext.Contacts.Any(contact => contact.Id == id);
+        return await CheckIfContactExistsInDatabaseAsync(id);
     }
 
-    public void SaveChanges()
+    private async Task<bool> CheckIfContactExistsInDatabaseAsync(long id)
     {
-        _dbContext.SaveChanges();
+        bool exists = await _dbContext.Contacts.AnyAsync(contact => contact.Id == id);
+        
+        return exists;
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await CommitChangesToDatabaseAsync();
+    }
+
+    private async Task CommitChangesToDatabaseAsync()
+    {
+        await _dbContext.SaveChangesAsync();
     }
 }
