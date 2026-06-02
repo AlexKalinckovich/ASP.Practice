@@ -1,0 +1,86 @@
+:root {
+    --color-danger-primary: #dc2626;
+    --color-danger-hover: #b91c1c;
+    --color-danger-bg: #fef2f2;
+    --color-danger-border: #f87171;
+    --color-danger-text: #991b1b;
+
+    --color-text-main: #334155;
+    --color-bg-alt: #f8fafc;
+    --color-bg-alt-hover: #f1f5f9;
+    --color-border-main: #cbd5e1;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+}
+
+.warningText {
+    font-size: 1.1rem;
+    color: var(--color-text-main);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.contactName {
+    font-weight: 700;
+    color: var(--color-danger-primary);
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.deleteButton {
+    background-color: var(--color-danger-primary);
+    color: #ffffff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.deleteButton:hover {
+    background-color: var(--color-danger-hover);
+}
+
+.cancelButton {
+    background-color: var(--color-bg-alt);
+    color: var(--color-text-main);
+    border: 1px solid var(--color-border-main);
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+    background-color: var(--color-bg-alt-hover);
+}
+
+.globalError {
+    background-color: var(--color-danger-bg);
+    padding: 16px;
+    border-left: 4px solid var(--color-danger-border);
+    color: var(--color-danger-text);
+    margin-bottom: 8px;
+    border-radius: 6px;
+    text-align: left;
+}
+
+.globalErrorText {
+    margin: 0;
+    font-weight: 500;
+    line-height: 1.5;
+}

@@ -1,0 +1,117 @@
+:root {
+    --color-bg-main: #ffffff;
+    --color-bg-alt: #f8fafc;
+    --color-bg-hover: #f1f5f9;
+    --color-text-main: #334155;
+    --color-text-muted: #64748b;
+    --color-border-light: #e2e8f0;
+
+    --color-info-main: #0ea5e9;
+    --color-info-hover: #0284c7;
+    --color-warning-main: #f59e0b;
+    --color-warning-hover: #d97706;
+    --color-danger-main: #dc2626;
+    --color-danger-hover: #b91c1c;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    background-color: var(--color-bg-main);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border-light);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th, .table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-border-light);
+    color: var(--color-text-main);
+}
+
+.table th {
+    background-color: var(--color-bg-alt);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+.table tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tr:hover {
+    background-color: var(--color-bg-hover);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.viewButton {
+    background-color: var(--color-info-main);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.viewButton:hover {
+    background-color: var(--color-info-hover);
+}
+
+.editButton {
+    background-color: var(--color-warning-main);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.editButton:hover {
+    background-color: var(--color-warning-hover);
+}
+
+.deleteButton {
+    background-color: var(--color-danger-main);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.deleteButton:hover {
+    background-color: var(--color-danger-hover);
+}
+
+.emptyMessage {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    background-color: var(--color-bg-main);
+    border-radius: 8px;
+}

@@ -1,0 +1,59 @@
+:root {
+    --color-text-main: #334155;
+    --color-text-muted: #64748b;
+    --color-bg-alt: #f1f5f9;
+    --color-bg-alt-hover: #e2e8f0;
+    --color-border-main: #cbd5e1;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detailRow {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-bg-alt);
+}
+
+.detailRow:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.value {
+    font-size: 1.1rem;
+    color: var(--color-text-main);
+    margin: 0;
+    font-weight: 500;
+}
+
+.closeButton {
+    margin-top: 24px;
+    background-color: var(--color-bg-alt);
+    color: var(--color-text-main);
+    border: 1px solid var(--color-border-main);
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    align-self: flex-end;
+    transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+    background-color: var(--color-bg-alt-hover);
+}
