@@ -1,4 +1,5 @@
 using ContactBackend.Application.API.Endpoints;
+using ContactBackend.Application.API.Middleware;
 using ContactBackend.Application.API.Serialization;
 using ContactBackend.Application.Infrastructure.DependencyInjection;
 using Data.Core;
@@ -28,5 +29,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
 app.MapContactEndpoints();
 app.Run();

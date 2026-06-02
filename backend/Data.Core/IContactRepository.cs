@@ -1,14 +1,18 @@
 using Model.Core.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Data.Core;
 
 public interface IContactRepository
 {
-    IEnumerable<Contact> GetAll();
-    Contact? GetById(long id);
-    void Add(Contact contact);
+    Task<IEnumerable<Contact>> GetAllAsync();
+    Task<Contact?> GetByIdAsync(long id);
+    Task<IEnumerable<Contact>> GetAllReadOnlyAsync();
+    Task<Contact?> GetByIdReadOnlyAsync(long id);
+    Task<Contact> AddAsync(Contact contact);
     void Update(Contact contact);
     void Delete(Contact contact);
-    bool Exists(long id);
-    void SaveChanges();
+    Task<bool> ExistsAsync(long id);
+    Task SaveChangesAsync();
 }

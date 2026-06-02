@@ -11,27 +11,29 @@ public static class ContactEndpoints
     {
         RouteGroupBuilder group = app.MapGroup("/api/v1/contacts");
 
-        group.MapGet("/", GetAll);
-        group.MapGet("/{id:long}", GetById);
-        group.MapPost("/", Create);
-        group.MapPut("/{id:long}", Update);
-        group.MapPatch("/{id:long}", Patch);
-        group.MapDelete("/{id:long}", Delete);
+        group.MapGet("/", GetAllAsync);
+        group.MapGet("/{id:long}", GetByIdAsync);
+        group.MapPost("/", CreateAsync);
+        group.MapPut("/{id:long}", UpdateAsync);
+        group.MapPatch("/{id:long}", PatchAsync);
+        group.MapDelete("/{id:long}", DeleteAsync);
     }
 
-    private static Ok<IEnumerable<ContactReadDto>> GetAll([FromServices] IContactService service)
+    private static async Task<Ok<IEnumerable<ContactReadDto>>> GetAllAsync([FromServices] IContactService service)
     {
-        IEnumerable<ContactReadDto> contacts = service.GetAll();
+        IEnumerable<ContactReadDto> contacts = await service.GetAllAsync();
+        
         return TypedResults.Ok(contacts);
     }
 
-    private static Results<Ok<ContactReadDto>, NotFound> GetById(long id, [FromServices] IContactService service)
+    private static async Task<Results<Ok<ContactReadDto>, NotFound>> GetByIdAsync(long id, [FromServices] IContactService service)
     {
-        ContactReadDto? contact = service.GetById(id);
-        return EvaluateGetById(contact);
+        ContactReadDto? contact = await service.GetByIdAsync(id);
+        
+        return EvaluateGetByIdResult(contact);
     }
 
-    private static Results<Ok<ContactReadDto>, NotFound> EvaluateGetById(ContactReadDto? contact)
+    private static Results<Ok<ContactReadDto>, NotFound> EvaluateGetByIdResult(ContactReadDto? contact)
     {
         if (contact == null)
         {
@@ -41,73 +43,77 @@ public static class ContactEndpoints
         return TypedResults.Ok(contact);
     }
 
-    private static Results<Created<ContactReadDto>, BadRequest<string>> Create([FromBody] ContactCreateDto dto, [FromServices] IContactService service)
+    private static async Task<Results<Created<ContactReadDto>, BadRequest<string>>> CreateAsync([FromBody] ContactCreateDto dto, [FromServices] IContactService service)
     {
-        return ProcessCreateDto(dto, service);
+        return await ProcessCreateDtoAsync(dto, service);
     }
 
-    private static Results<Created<ContactReadDto>, BadRequest<string>> ProcessCreateDto(ContactCreateDto? dto, IContactService service)
+    private static async Task<Results<Created<ContactReadDto>, BadRequest<string>>> ProcessCreateDtoAsync(ContactCreateDto? dto, IContactService service)
     {
         if (dto == null)
         {
             return TypedResults.BadRequest("Payload cannot be null.");
         }
 
-        return ExecuteCreate(dto, service);
+        return await ExecuteCreateAsync(dto, service);
     }
 
-    private static Created<ContactReadDto> ExecuteCreate(ContactCreateDto dto, IContactService service)
+    private static async Task<Created<ContactReadDto>> ExecuteCreateAsync(ContactCreateDto dto, IContactService service)
     {
-        ContactReadDto createdContact = service.Create(dto);
+        ContactReadDto createdContact = await service.CreateAsync(dto);
+        
         return TypedResults.Created($"/api/v1/contacts/{createdContact.Id}", createdContact);
     }
 
-    private static Results<NoContent, BadRequest<string>> Update(long id, [FromBody] ContactUpdateDto dto, [FromServices] IContactService service)
+    private static async Task<Results<NoContent, BadRequest<string>>> UpdateAsync(long id, [FromBody] ContactUpdateDto dto, [FromServices] IContactService service)
     {
-        return ProcessUpdateDto(id, dto, service);
+        return await ProcessUpdateDtoAsync(id, dto, service);
     }
 
-    private static Results<NoContent, BadRequest<string>> ProcessUpdateDto(long id, ContactUpdateDto? dto, IContactService service)
+    private static async Task<Results<NoContent, BadRequest<string>>> ProcessUpdateDtoAsync(long id, ContactUpdateDto? dto, IContactService service)
     {
         if (dto == null)
         {
             return TypedResults.BadRequest("Payload cannot be null.");
         }
 
-        return ExecuteUpdate(id, dto, service);
+        return await ExecuteUpdateAsync(id, dto, service);
     }
 
-    private static NoContent ExecuteUpdate(long id, ContactUpdateDto dto, IContactService service)
+    private static async Task<NoContent> ExecuteUpdateAsync(long id, ContactUpdateDto dto, IContactService service)
     {
         dto.Id = id;
-        service.Update(dto);
+        await service.UpdateAsync(dto);
+        
         return TypedResults.NoContent();
     }
 
-    private static Results<NoContent, BadRequest<string>> Patch(long id, [FromBody] ContactPatchDto dto, [FromServices] IContactService service)
+    private static async Task<Results<NoContent, BadRequest<string>>> PatchAsync(long id, [FromBody] ContactPatchDto dto, [FromServices] IContactService service)
     {
-        return ProcessPatchDto(id, dto, service);
+        return await ProcessPatchDtoAsync(id, dto, service);
     }
 
-    private static Results<NoContent, BadRequest<string>> ProcessPatchDto(long id, ContactPatchDto? dto, IContactService service)
+    private static async Task<Results<NoContent, BadRequest<string>>> ProcessPatchDtoAsync(long id, ContactPatchDto? dto, IContactService service)
     {
         if (dto == null)
         {
             return TypedResults.BadRequest("Payload cannot be null.");
         }
 
-        return ExecutePatch(id, dto, service);
+        return await ExecutePatchAsync(id, dto, service);
     }
 
-    private static NoContent ExecutePatch(long id, ContactPatchDto dto, IContactService service)
+    private static async Task<NoContent> ExecutePatchAsync(long id, ContactPatchDto dto, IContactService service)
     {
-        service.Patch(id, dto);
+        await service.PatchAsync(id, dto);
+        
         return TypedResults.NoContent();
     }
 
-    private static NoContent Delete(long id, [FromServices] IContactService service)
+    private static async Task<NoContent> DeleteAsync(long id, [FromServices] IContactService service)
     {
-        service.Delete(id);
+        await service.DeleteAsync(id);
+        
         return TypedResults.NoContent();
     }
 }

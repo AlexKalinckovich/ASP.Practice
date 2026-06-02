@@ -1,7 +1,7 @@
 using FluentValidation;
 using Model.Core.DTOs;
 
-namespace ContactBackend.Application.Core.Validators;
+namespace Validation.Core.Validators;
 
 public class ContactReadDtoValidator : AbstractValidator<ContactReadDto>
 {
@@ -16,10 +16,12 @@ public class ContactReadDtoValidator : AbstractValidator<ContactReadDto>
 
         RuleFor(dto => dto.MobilePhone)
             .NotEmpty()
+            .ApplyMobilePhoneRules()
             .ApplyStringLengthRules(20);
 
         RuleFor(dto => dto.BirthDate)
             .NotEmpty()
-            .ApplyPastDateRules();
+            .ApplyPastDateRules()
+            .ApplyAdultAgeRules();
     }
 }
