@@ -2,6 +2,7 @@ using ContactBackend.Application.API.Endpoints;
 using ContactBackend.Application.API.Serialization;
 using ContactBackend.Application.Infrastructure.DependencyInjection;
 using Data.Core;
+using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,8 @@ WebApplication app = builder.Build();
 using (IServiceScope scope = app.Services.CreateScope())
 {
     ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    
+    await dbContext.Database.MigrateAsync();
 }
 
 if (app.Environment.IsDevelopment())
