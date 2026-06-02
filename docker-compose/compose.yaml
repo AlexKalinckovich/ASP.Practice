@@ -1,0 +1,60 @@
+﻿services:
+  mysql:
+    image: mysql:8.0
+    container_name: contactbackend_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - db-internal
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  web:
+    image: contactbackend
+    build:
+      context: ../backend
+      dockerfile: ContactBackend/Dockerfile
+    container_name: contactbackend_api
+    ports:
+      - "${API_PORT}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - ConnectionStrings__Default=Server=mysql;Port=3306;Database=${DB_NAME};User=${DB_USER};Password=${DB_PASSWORD};
+    networks:
+      - db-internal
+      - web-external
+
+  frontend:
+    image: contactfrontend
+    build:
+      context: ../frontend/contact-frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+    container_name: contactfrontend_web
+    ports:
+      - "${FRONTEND_PORT}:80"
+    depends_on:
+      - web
+    networks:
+      - web-external
+
+volumes:
+  mysql_data:
+
+networks:
+  db-internal:
+    driver: bridge
+  web-external:
+    driver: bridge
